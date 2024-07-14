@@ -14,7 +14,7 @@
 [![GitHub release](https://img.shields.io/github/release/dulli/sensishell.svg)](https://github.com/dulli/sensishell/releases/)
 [![GoReportCard](https://goreportcard.com/badge/github.com/dulli/sensishell)](https://goreportcard.com/report/github.com/dulli/sensishell)
 
-_sensishell_ is a simple way for _Linux_ systems to turn shell commands into a sensor that is compared to defined thresholds, e.g. to periodically check if the system is idle and suspend it.
+_sensishell_ is a simple way for _Linux_ systems to turn shell commands into a sensor that is compared to defined thresholds, e.g. to periodically check if the system is idle and suspend it - written in pure _Go_ and without any third-party dependencies.
 
 ---
 
@@ -97,7 +97,7 @@ Valid comparators are:
 
 ## Development
 
-The following sections will help you to get started if you want to help with the development of _sensishell_ or just want to modify or compile it for yourself.
+The following sections will help you to get started if you want to help with the development of _sensishell_ or just want to modify or compile it for yourself. No dependencies are required, but the easiest way to get started is still to just spin up a [dev container](https://containers.dev/) from the included config.
 
 <div align="center">
 
