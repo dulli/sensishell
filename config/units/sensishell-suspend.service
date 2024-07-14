@@ -1,0 +1,12 @@
+[Unit]
+Description = sensishell-suspend-on-idle
+
+[Service]
+ExecStart = /bin/bash -c 'cat /etc/opt/sensishell/is-idle.conf | /opt/sensishell/sensishell -n 5 -s 300 -c "systemctl suspend"'
+Type = simple
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy = multi-user.target
