@@ -1,0 +1,45 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+version: 2
+before:
+    hooks:
+        - go mod tidy
+        - go generate ./...
+builds:
+    - binary: sensishell
+      targets:
+          - linux_amd64
+          - linux_arm64
+      main: ./sensishell.go
+      mod_timestamp: '{{ .CommitTimestamp }}'
+      flags:
+          - -v
+          - -trimpath
+      overrides:
+          - goos: linux
+            goarch: arm64
+            env:
+                - CC=aarch64-linux-gnu-gcc
+                - PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig/
+      hooks:
+          post:
+              - upx "{{ .Path }}"
+archives:
+    - format: binary
+checksum:
+    name_template: 'checksums.txt'
+snapshot:
+    name_template: '{{ incpatch .Version }}-next'
+changelog:
+    sort: asc
+    filters:
+        exclude: # See commit-msg hook
+            - '^chore:'
+            - '^docs:'
+            - '^refactor:'
+            - '^style:'
+            - '^ci:'
+            - '^build:'
+            - '^build(deps):'
+            - '^test:'
+            - '(?i)dependabot'
