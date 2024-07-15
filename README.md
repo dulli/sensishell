@@ -14,7 +14,7 @@
 [![GitHub release](https://img.shields.io/github/release/dulli/sensishell.svg)](https://github.com/dulli/sensishell/releases/)
 [![GoReportCard](https://goreportcard.com/badge/github.com/dulli/sensishell)](https://goreportcard.com/report/github.com/dulli/sensishell)
 
-_sensishell_ is a simple way for _Linux_ systems to turn shell commands into a sensor that is compared to defined thresholds, e.g. to periodically check if the system is idle and suspend it - written in pure _Go_ and without any third-party dependencies.
+_sensishell_ is a simple way to turn shell commands into a sensor that is compared to defined thresholds, e.g. to periodically check if the system is idle and suspend it - it is a single-file app, written in pure _Go_ and without any third-party dependencies. Originally built to replace all the overcomplicated auto-suspend solutions for my home servers, it can be used for a wide range of scenarios.
 
 ---
 
@@ -28,13 +28,13 @@ _sensishell_ is a simple way for _Linux_ systems to turn shell commands into a s
 
 ## Getting Started
 
-Copy the compiled executable as to your target computer, create a config file (which is simply read from `STDIN`, see the example in the `config` folder or the section [below](#configuration)) and run it e.g. using the command line:
+Copy the compiled executable as to your target computer, create a config file (which is simply read from `STDIN`, see the example in the `config` folder or the section [below](#configuration)) and run it using the command line:
 
 ```bash
 cat config/is-idle.conf | ./sensishell
 ```
 
-The above example will output the sensor values using structured logging - if you want to easily use the values to actually do something, e.g. you can provide a command that should be executed after `n` cycles where the sensor was active (i.e. the threshold was exceeded):
+The above example will output the sensor values using structured logging - if you want to easily use the values to actually do something, you can provide a command that should be executed after `n` cycles where the sensor was active (i.e. the threshold was exceeded):
 
 ```bash
 cat config/is-idle.conf | ./sensishell -n 5 -c "echo system is idle"
@@ -43,8 +43,8 @@ cat config/is-idle.conf | ./sensishell -n 5 -c "echo system is idle"
 Of course you can also specify the interval between the cycles or whether _sensishell_ should exit after a cycle limit was reached:
 
 ```console
-$ bin/linux/amd64/sensishell -h
-Usage of bin/linux/amd64/sensishell:
+$ ./sensishell -h
+Usage of ./sensishell:
   -c string
         command to run after cycle limit is reached
   -n int
@@ -56,13 +56,15 @@ Usage of bin/linux/amd64/sensishell:
 
 ## Configuration
 
-All sensor configuration is provided to _sensishell_ as input to `STDIN` in the following format where each line is an individual sensor and each field is separated by a single space character:
+All sensor configuration is provided to _sensishell_ as input to `STDIN` in the following format where each line is an individual sensor and each field is separated by a single space character as in the following, annotated, example:
 
-```
-<sensor-id> <sensor-command> <sensor-comparator> <sensor-threshold>
+```python
+active-users "who | wc -l" == 0 ──> threshold
+|            |             |
+└──> name    └──> command  └──> comparator
 ```
 
-Lines starting with a `#` are treated as comments. This results in the configuration format technically being a valid CSV-dialect that uses the space character as the delimiter.
+Lines starting with a `#` are treated as comments. Technically, the configuration format is a valid CSV-dialect that uses the space character as the delimiter, so make sure to properly quote your commands and to use single spaces.
 
 An example configuration that defines different sensors to see if a system is idle would therefore look like this:
 
@@ -83,17 +85,9 @@ minimum-uptime "cat /proc/uptime | cut -d ' ' -f 1" >= 300
 ```
 Command outputs are parsed to floating point numbers to compute the sensor values and sensors are treated as active when the expression comparing the value to the thresholds with the defined comparator evaluates to true.
 
-Valid comparators are:
-```python
-"==": Equal,
-"!=": NotEqual,
-"<":  Less,
-">":  Greater,
-"<=": LessOrEqual,
-">=": GreaterOrEqual
-```
+Valid comparators are `==`, `!=`, `<`, `>`, `<=` and `>=`.
 
-<!-- if you are looking at the source of this readme, please note that while the above code blocks are syntax highlighted as Python, it does in fact need to be valid CSV as stated above; Python just fits the required highlight pretty good by coincidence  -->
+<!-- if you are looking at the source of this readme, please note that while the above code blocks are syntax highlighted as Python, it does in fact need to be valid CSV as stated above; Python just fits the required highlighting pretty good by coincidence  -->
 
 ## Development
 
