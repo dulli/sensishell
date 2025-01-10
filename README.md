@@ -82,6 +82,8 @@ active-snapraid "pgrep -lc snapraid" == 0
 active-restic "pgrep -lc restic" == 0
 # minimum uptime in seconds?
 minimum-uptime "cat /proc/uptime | cut -d ' ' -f 1" >= 300
+# audio playing?
+cat /proc/asound/card*/*p/*/status | grep RUNNING | wc -l == 0
 ```
 Command outputs are parsed to floating point numbers to compute the sensor values and sensors are treated as active when the expression comparing the value to the thresholds with the defined comparator evaluates to true.
 
